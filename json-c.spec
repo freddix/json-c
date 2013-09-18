@@ -1,11 +1,14 @@
+%define		rdate	20120530
+
 Summary:	A JSON implementation in C
 Name:		json-c
-Version:	0.9
-Release:	3
+Version:	0.10
+Release:	1
 License:	LGPL v2
 Group:		Development/Libraries
-Source0:	http://oss.metaparadigm.com/json-c/%{name}-%{version}.tar.gz
-# Source0-md5:	3a13d264528dcbaf3931b0cede24abae
+#Source0:	http://oss.metaparadigm.com/json-c/%{name}-%{version}.tar.gz
+Source0:	https://github.com/json-c/json-c/archive/%{name}-%{version}-%{rdate}.tar.gz
+# Source0-md5:	756c1ee48d573559a1e3662e0805325f
 URL:		http://oss.metaparadigm.com/json-c/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -28,7 +31,7 @@ Requires:	%{name} = %{version}-%{release}
 Header files for the json-c library.
 
 %prep
-%setup -q
+%setup -qn %{name}-%{name}-%{version}-%{rdate}
 
 %build
 %{__libtoolize}

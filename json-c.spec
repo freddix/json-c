@@ -1,20 +1,19 @@
-%define		rdate	20130402
-
 Summary:	A JSON implementation in C
 Name:		json-c
-Version:	0.11
-Release:	2
+Version:	0.12
+Release:	1
 License:	LGPL v2
 Group:		Development/Libraries
-#Source0:	http://oss.metaparadigm.com/json-c/%{name}-%{version}.tar.gz
-Source0:	https://github.com/json-c/json-c/archive/%{name}-%{version}-%{rdate}.tar.gz
-# Source0-md5:	7013b2471a507942eb8ed72a5d872d16
+Source0:	https://s3.amazonaws.com/%{name}_releases/releases/%{name}-%{version}.tar.gz
+# Source0-md5:	3ca4bbb881dfc4017e8021b5e0a8c491
 URL:		http://oss.metaparadigm.com/json-c/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
 BuildRequires:	pkg-config
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		specflags   -Wno-error
 
 %description
 JSON-C implements a reference counting object model that allows you to
@@ -31,7 +30,7 @@ Requires:	%{name} = %{version}-%{release}
 Header files for the json-c library.
 
 %prep
-%setup -qn %{name}-%{name}-%{version}-%{rdate}
+%setup -q
 
 %build
 %{__libtoolize}
@@ -51,40 +50,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 
-# link with libjson-c directly (stub libjson won't work with
-# --no-copy-dt-needed-entries
-ln -sf $(basename $RPM_BUILD_ROOT%{_libdir}/libjson-c.so.*.*.*) \
-    $RPM_BUILD_ROOT%{_libdir}/libjson.so
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post	-p /usr/sbin/ldconfig
 %postun	-p /usr/sbin/ldconfig
 
-%pretrans devel
-# transition from 0.11-1
-[ ! -L %{_includedir}/json-c ] || rm -f %{_includedir}/json-c
-# transition from <= 0.10 and 0.11-1
-if [ -d %{_includedir}/json -a ! -d %{_includedir}/json-c ]; then
-        mv -f %{_includedir}/json %{_includedir}/json-c
-        ln -sf json-c %{_includedir}/json
-fi
-
 %files
 %defattr(644,root,root,755)
 %doc README INSTALL AUTHORS NEWS README
 %attr(755,root,root) %ghost %{_libdir}/libjson-c.so.2
-%attr(755,root,root) %ghost %{_libdir}/libjson.so.0
 %attr(755,root,root) %{_libdir}/libjson-c.so.*.*.*
-%attr(755,root,root) %{_libdir}/libjson.so.*.*.*
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libjson-c.so
-%attr(755,root,root) %{_libdir}/libjson.so
-%{_includedir}/json
 %{_includedir}/json-c
 %{_pkgconfigdir}/json-c.pc
-%{_pkgconfigdir}/json.pc
 
